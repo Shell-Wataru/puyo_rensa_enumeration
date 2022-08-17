@@ -31,6 +31,8 @@ const vector<pair<int, int>> NEIGHBORS = {
     {0, -1},
     {1, 0},
     {-1, 0}};
+
+// 繋がりを管理するデータ構造
 struct UnionFind
 {
     vector<int> data;
@@ -76,6 +78,7 @@ struct UnionFind
 
 UnionFind uf(ROW_SIZE *COLUMN_SIZE);
 
+// 盤面を出力
 void print_board(board &b)
 {
     for (int i = ROW_SIZE - 1; i >= 0; i--)
@@ -89,6 +92,7 @@ void print_board(board &b)
     cout << flush;
 }
 
+// 消えるぷよを挿入する。正しく挿入できたらtrue
 bool insert_vanish_puyos(board &b, int base_row, int base_column, vanish_puyos &vanishes, int color)
 {
     for (auto p : vanishes)
@@ -114,6 +118,7 @@ bool insert_vanish_puyos(board &b, int base_row, int base_column, vanish_puyos &
     return true;
 }
 
+//  連鎖が正しく消えるかどうか。挿入したぷよ以外が消えていたらfalse
 bool vanish_correctly(board &b, ll max_vanish_size, ll max_vanish_count)
 {
     uf.clear();
@@ -160,6 +165,7 @@ bool vanish_correctly(board &b, ll max_vanish_size, ll max_vanish_count)
     return count == max_vanish_count;
 }
 
+//  盤面で使われている色の数
 int used_color_count(board b)
 {
     set<int> used_colors;
@@ -179,6 +185,7 @@ int used_color_count(board b)
 int main()
 {
     vector<vector<int>> initial_board(ROW_SIZE, vector<int>(COLUMN_SIZE, NONE));
+    // 今の所、4個消しのみ.
     vector<vanish_puyos> vanish_puyo_patterns = {
         {
             {0, 0}, {1, 0}, {2, 0}, {3, 0} // I
@@ -253,6 +260,7 @@ int main()
                         if (i == 0)
                         {
                             board new_board(b);
+                            // 一連鎖目の色はR
                             bool inserted = insert_vanish_puyos(new_board, r, c, v, COLORS[0]);
                             if (inserted && vanish_correctly(new_board, v.size(), 1))
                             {
@@ -262,6 +270,7 @@ int main()
                         else if (i == 1)
                         {
                             board new_board(b);
+                            // 二連鎖目の色はG
                             bool inserted = insert_vanish_puyos(new_board, r, c, v, COLORS[1]);
                             if (inserted && vanish_correctly(new_board, v.size(), 1))
                             {
@@ -270,6 +279,7 @@ int main()
                         }
                         else
                         {
+                            // 三連鎖目以降の色は既存の色か新しい色。
                             for (int j = 0; j < next_colors; j++)
                             {
                                 board new_board(b);
