@@ -16,9 +16,9 @@ using ll = long long;
 using board = vector<vector<int>>;
 using vanish_puyos = vector<pair<int, int>>;
 
-int ROW_SIZE = 7;
+int ROW_SIZE = 9;
 int COLUMN_SIZE = 3;
-int MAX_RENSA = 5;
+int MAX_RENSA = 4;
 const ll NONE = 0;
 const ll R = 1;
 const ll G = 2;
@@ -95,7 +95,7 @@ void print_board(board &b)
 // 消えるぷよを挿入する。正しく挿入できたらtrue
 bool insert_vanish_puyos(board &b, int base_row, int base_column, vanish_puyos &vanishes, int color)
 {
-    for (auto p : vanishes)
+    for (auto &p : vanishes)
     {
         ll r = base_row + p.first;
         ll c = base_column + p.second;
@@ -130,7 +130,7 @@ bool vanish_correctly(board &b, ll max_vanish_size, ll max_vanish_count)
         {
             if (b[r][c] != NONE)
             {
-                for (auto neighbor : NEIGHBORS)
+                for (auto &neighbor : NEIGHBORS)
                 {
                     int neighbor_r = r + neighbor.first;
                     int neighbor_c = c + neighbor.second;
