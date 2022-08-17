@@ -16,9 +16,9 @@ using ll = long long;
 using board = vector<vector<int>>;
 using vanish_puyos = vector<pair<int, int>>;
 
-int ROW_SIZE = 6;
+int ROW_SIZE = 7;
 int COLUMN_SIZE = 3;
-int MAX_RENSA = 4;
+int MAX_RENSA = 5;
 const ll NONE = 0;
 const ll R = 1;
 const ll G = 2;
@@ -217,6 +217,12 @@ int main()
         {
             {0, 0}, {1, 0}, {1, 1}, {2, 1} // Z
         },
+        {
+            {0, 1}, {0, 2}, {1, 0}, {1, 1} // 横S
+        },
+        {
+            {0, 0}, {0, 1}, {1, 1}, {1, 2} // 横Z
+        },
 
         {
             {0, 0}, {0, 1}, {0, 2}, {1, 0} // 横L
@@ -295,11 +301,11 @@ int main()
             }
         }
     }
-    // for (auto b : rensas[MAX_RENSA])
-    // {
-    //     cout << "!!" << endl;
-    //     print_board(b);
-    // }
+    for (int i = 0; i < 10; i++)
+    {
+        print_board(rensas[MAX_RENSA][i]);
+        cout << "=====" << endl;
+    }
     cout << rensas[MAX_RENSA].size() << endl;
     return 0;
 }
