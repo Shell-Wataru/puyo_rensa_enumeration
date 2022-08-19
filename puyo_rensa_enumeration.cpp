@@ -18,7 +18,7 @@ using vanish_puyos = vector<pair<int, int>>;
 
 int ROW_SIZE = 9;
 int COLUMN_SIZE = 3;
-int MAX_RENSA = 4;
+int MAX_RENSA = 5;
 const ll NONE = 0;
 const ll R = 1;
 const ll G = 2;
@@ -28,9 +28,10 @@ const vector<ll> COLORS = {
     R, G, B, Y};
 const vector<pair<int, int>> NEIGHBORS = {
     {0, 1},
-    {0, -1},
-    {1, 0},
-    {-1, 0}};
+    // {0, -1},
+    {1, 0}
+    // {-1, 0}
+};
 
 // 繋がりを管理するデータ構造
 struct UnionFind
@@ -81,11 +82,11 @@ UnionFind uf(ROW_SIZE *COLUMN_SIZE);
 // 盤面を出力
 void print_board(board &b)
 {
-    for (int i = ROW_SIZE - 1; i >= 0; i--)
+    for (int j = 0; j < COLUMN_SIZE; j++)
     {
-        for (int j = 0; j < COLUMN_SIZE; j++)
+        for (int i = 0; i < b[j].size(); i++)
         {
-            cout << b[i][j];
+            cout << b[j][i];
         }
         cout << "\n";
     }
@@ -101,14 +102,10 @@ bool insert_vanish_puyos(board &b, int base_row, int base_column, vanish_puyos &
         ll c = base_column + p.second;
         if (0 <= r && r < ROW_SIZE &&
             0 <= c && c < COLUMN_SIZE &&
-            (r == 0 || b[r - 1][c] != NONE) &&
-            b[ROW_SIZE - 1][c] == NONE)
+            (b[c].size() >= r) &&
+            b[c].size() < ROW_SIZE)
         {
-            for (int i = ROW_SIZE - 1; i > r; i--)
-            {
-                b[i][c] = b[i - 1][c];
-            }
-            b[r][c] = color;
+            b[c].insert(b[c].begin() + r, color);
         }
         else
         {
@@ -124,30 +121,27 @@ bool vanish_correctly(board &b, ll max_vanish_size, ll max_vanish_count)
     uf.clear();
     ll count = 0;
 
-    for (int r = 0; r < ROW_SIZE; r++)
+    for (int c = 0; c < COLUMN_SIZE; c++)
     {
-        for (int c = 0; c < COLUMN_SIZE; c++)
+        for (int r = 0; r < b[c].size(); r++)
         {
-            if (b[r][c] != NONE)
+            for (auto &neighbor : NEIGHBORS)
             {
-                for (auto &neighbor : NEIGHBORS)
+                int neighbor_r = r + neighbor.first;
+                int neighbor_c = c + neighbor.second;
+                if (0 <= neighbor_c && neighbor_c < COLUMN_SIZE &&
+                    0 <= neighbor_r && neighbor_r < b[neighbor_c].size() &&
+                    b[c][r] == b[neighbor_c][neighbor_r])
                 {
-                    int neighbor_r = r + neighbor.first;
-                    int neighbor_c = c + neighbor.second;
-                    if (0 <= neighbor_r && neighbor_r < ROW_SIZE &&
-                        0 <= neighbor_c && neighbor_c < COLUMN_SIZE &&
-                        b[r][c] == b[neighbor_r][neighbor_c])
-                    {
-                        uf.unite(COLUMN_SIZE * r + c, COLUMN_SIZE * neighbor_r + neighbor_c);
-                    }
+                    uf.unite(COLUMN_SIZE * r + c, COLUMN_SIZE * neighbor_r + neighbor_c);
                 }
             }
         }
     }
 
-    for (int r = 0; r < ROW_SIZE; r++)
+    for (int c = 0; c < COLUMN_SIZE; c++)
     {
-        for (int c = 0; c < COLUMN_SIZE; c++)
+        for (int r = 0; r < b[c].size(); r++)
         {
             if (uf.find(COLUMN_SIZE * r + c) == COLUMN_SIZE * r + c)
             {
@@ -184,7 +178,7 @@ int used_color_count(board b)
 
 int main()
 {
-    vector<vector<int>> initial_board(ROW_SIZE, vector<int>(COLUMN_SIZE, NONE));
+    vector<vector<int>> initial_board(COLUMN_SIZE);
     // 今の所、4個消しのみ.
     vector<vanish_puyos> vanish_puyo_patterns = {
         {
