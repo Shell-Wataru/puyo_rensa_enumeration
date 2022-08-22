@@ -15,7 +15,7 @@ using ll = long long;
 using board = vector<vector<uint8_t>>;
 using vanish_puyos = vector<pair<uint8_t, uint8_t>>;
 
-uint8_t ROW_SIZE = 8;
+uint8_t ROW_SIZE = 11;
 uint8_t COLUMN_SIZE = 3;
 uint8_t MAX_RENSA = 6;
 const uint8_t NONE = 0;
@@ -177,7 +177,10 @@ uint8_t used_color_count(board b)
 
 int main()
 {
-    vector<vector<uint8_t>> initial_board(COLUMN_SIZE);
+    vector<vector<uint8_t>> initial_board = {
+        {1, 1, 1},
+        {1, 2},
+        {2, 1}};
     // 今の所、4個消しのみ.
     vector<vanish_puyos> vanish_puyo_patterns = {
         {
@@ -255,7 +258,7 @@ int main()
             {
                 for (uint8_t c = 0; c < COLUMN_SIZE; c++)
                 {
-                    for (uint8_t r = 0; r <= b[c].size() && r < ROW_SIZE; r++)
+                    for (uint8_t r = 2; r <= b[c].size() && r < ROW_SIZE; r++)
                     {
 
                         for (uint8_t j = 0; j < next_colors; j++)
